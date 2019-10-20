@@ -15,11 +15,11 @@ app.post('/', upload.single('streamfile'), (req, res) => {
     if (!err) {
       console.log('received data', data);
       const help = helpers.handleData(data);
+      res.send(help);
     } else {
       console.log(err);
     }
   });
-  res.send('File uploaded');
 });
 
 app.listen(PORT, () => console.log(`App listening on port ${PORT}`));
