@@ -17,11 +17,28 @@ export default {
     msg: String,
   },
   methods: {
-    postFile: (event) => {
+    postFile: async (event) => {
       event.preventDefault();
       console.log('hello world');
       const fileUpload = document.getElementById('fileUpload');
       console.log(fileUpload.value);
+      console.log(fileUpload.files[0]);
+      try {
+        const dataUpload = await fetch('/', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: fileUpload.files[0],
+        });
+        const response = await dataUpload;
+        if (response.status === 200) {
+          console.log('yay');
+        }
+      } catch (error) {
+        console.error('File upload error', error);
+      }
     },
   },
 };
