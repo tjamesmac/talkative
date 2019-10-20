@@ -7,6 +7,7 @@
       </label>
       <input type="submit" />
     </form>
+    <div v-if="fileError">{{ fileError }}</div>
     <div v-if="loading">Loading...</div>
     <div class="data-output" v-if="wordData">
       <div>
@@ -40,41 +41,48 @@ export default {
       wordData: null,
       wordHighArray: null,
       loading: false,
+      fileError: null,
     };
   },
   methods: {
     postFile: async function(event) { //eslint-disable-line
       event.preventDefault();
       this.loading = true;
+      this.fileError = '';
       const fileUpload = document.getElementById('fileUpload');
       const formData = new FormData();
       formData.append('streamfile', fileUpload.files[0]);
-      try {
-        const dataUpload = await fetch('/', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-          },
-          body: formData,
-        });
-        const response = await dataUpload;
-        if (response.status === 200) {
-          const responseJSON = await response.json();
+      if (fileUpload.files) {
+        try {
+          const dataUpload = await fetch('/', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+            },
+            body: formData,
+          });
+          const response = await dataUpload;
+          if (response.status === 200) {
+            const responseJSON = await response.json();
 
-          this.wordData = await responseJSON;
-          const { wordCounts } = responseJSON;
-          const wordKeys = Object.keys(wordCounts);
+            this.wordData = await responseJSON;
+            const { wordCounts } = responseJSON;
+            const wordKeys = Object.keys(wordCounts);
 
-          const amounts = wordKeys.map(item => wordCounts[item]);
-          const highestAmount = Math.max(...amounts);
+            const amounts = wordKeys.map(item => wordCounts[item]);
+            const highestAmount = Math.max(...amounts);
 
-          const highestWordCount = wordKeys.filter(word => wordCounts[word] === highestAmount);
+            const highestWordCount = wordKeys.filter(word => wordCounts[word] === highestAmount);
 
-          this.wordHighArray = highestWordCount;
-          this.loading = false;
+            this.wordHighArray = highestWordCount;
+            this.loading = false;
+          } else {
+            console.log(response.status);
+            this.fileError = 'No file uploaded';
+          }
+        } catch (error) {
+          console.error('File upload error', error);
         }
-      } catch (error) {
-        console.error('File upload error', error);
       }
     },
   },

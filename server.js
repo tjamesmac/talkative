@@ -11,14 +11,19 @@ const PORT = process.env.PORT || 8080;
 app.use('/', express.static(path.join(__dirname, 'dist')));
 
 app.post('/', upload.single('streamfile'), (req, res) => {
-  fs.readFile(req.file.path, { encoding: 'utf-8' }, (err, data) => {
-    if (!err) {
-      const dataHandler = helpers.handleData(data);
-      res.send(dataHandler);
-    } else {
-      console.log(err);
-    }
-  });
+  console.log(req.file);
+  if (req.file) {
+    fs.readFile(req.file.path, { encoding: 'utf-8' }, (err, data) => {
+      if (!err) {
+        const dataHandler = helpers.handleData(data);
+        res.send(dataHandler);
+      } else {
+        console.log(err);
+      }
+    });
+  } else {
+    res.sendStatus(501);
+  }
 });
 
 app.listen(PORT, () => console.log(`App listening on port ${PORT}`));
