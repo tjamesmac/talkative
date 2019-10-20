@@ -11,7 +11,6 @@ const PORT = process.env.PORT || 8080;
 app.use('/', express.static(path.join(__dirname, 'dist')));
 
 app.post('/', upload.single('streamfile'), (req, res) => {
-  console.log(req.file);
   if (req.file) {
     fs.readFile(req.file.path, { encoding: 'utf-8' }, (err, data) => {
       if (!err) {
