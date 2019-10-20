@@ -78,6 +78,7 @@ export default {
             this.loading = false;
           } else {
             console.log(response.status);
+            this.loading = false;
             this.fileError = 'No file uploaded';
           }
         } catch (error) {
