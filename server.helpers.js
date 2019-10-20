@@ -1,5 +1,4 @@
 const getWordData = (wordArray) => {
-  console.log(wordArray.length);
   const wordCounts = {};
   let wordCountTotal = 0;
 
@@ -21,7 +20,6 @@ const getWordData = (wordArray) => {
     averageWordCount,
     wordCounts,
   };
-  console.log(wordData);
   return wordData;
 };
 
