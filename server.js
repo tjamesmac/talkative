@@ -14,8 +14,8 @@ app.post('/', upload.single('streamfile'), (req, res) => {
   fs.readFile(req.file.path, { encoding: 'utf-8' }, (err, data) => {
     if (!err) {
       console.log('received data', data);
-      const help = helpers.handleData(data);
-      res.send(help);
+      const dataHandler = helpers.handleData(data);
+      res.send(dataHandler);
     } else {
       console.log(err);
     }
