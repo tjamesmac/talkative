@@ -15,7 +15,7 @@ const getWordData = (wordArray) => {
       }
     }
   }
-  const averageWordCount = wordCountTotal / wordArray.length;
+  const averageWordCount = (wordCountTotal / wordArray.length).toFixed(3);
   const wordData = {
     totalWords: wordArray.length,
     averageWordCount,
