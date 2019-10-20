@@ -7,22 +7,41 @@
       </label>
       <input type="submit" />
     </form>
+    <div class="data-output" v-if="wordData">
+      <div>
+        <p>Word Count = {{ wordData.totalWords}}</p>
+      </div>
+      <div>
+        <p>Average word length = {{ wordData.averageWordCount }}</p>
+      </div>
+      <div v-for="(item, index) in Object.keys(wordData.wordCounts)" :key="index">
+        <p>Number of words of length {{ item }} is {{ wordData.wordCounts[item] }}</p>
+      </div>
+      <div v-if="wordHighArray">
+        <p v-if="wordHighArray.length === 1">
+          The most frequently occuring word length is
+          <span v-for="(item, index) of wordHighArray" :key="index">{{ item }}</span>
+        </p>
+        <p v-else>
+          The most frequently occuring word lengths are:
+          <span v-for="(item, index) of wordHighArray" :key="index">{{ item }} </span>
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: 'HelloWords',
   data: function () {   //eslint-disable-line
     return {
-      count: 0,
+      wordData: null,
+      wordHighArray: null,
     };
   },
-  props: {
-    msg: String,
-  },
   methods: {
-    postFile: async (event) => {
+    postFile: async function(event) { //eslint-disable-line
       event.preventDefault();
       const fileUpload = document.getElementById('fileUpload');
       const formData = new FormData();
@@ -39,8 +58,17 @@ export default {
         if (response.status === 200) {
           console.log('yay');
           const responseJSON = await response.json();
-
           console.log(responseJSON);
+          this.wordData = await responseJSON;
+          const { wordCounts } = responseJSON;
+          const wordKeys = Object.keys(wordCounts);
+          console.log(wordKeys);
+          const amounts = wordKeys.map(item => wordCounts[item]);
+          const highestAmount = Math.max(...amounts);
+          console.log(highestAmount, 'this is the highest amount');
+          const highestWordCount = wordKeys.filter(word => wordCounts[word] === highestAmount);
+          console.log(highestWordCount);
+          this.wordHighArray = highestWordCount;
         }
       } catch (error) {
         console.error('File upload error', error);
@@ -65,5 +93,8 @@ li {
 }
 a {
   color: #42b983;
+}
+.data-output {
+  text-align: left;
 }
 </style>
