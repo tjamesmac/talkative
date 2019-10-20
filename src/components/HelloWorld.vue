@@ -7,7 +7,7 @@
       </label>
       <input type="submit" />
     </form>
-    <div v-if="!loading && wordData">Loading...</div>
+    <div v-if="loading">Loading...</div>
     <div class="data-output" v-if="wordData">
       <div>
         <p>Word Count = {{ wordData.totalWords}}</p>
@@ -45,6 +45,7 @@ export default {
   methods: {
     postFile: async function(event) { //eslint-disable-line
       event.preventDefault();
+      this.loading = true;
       const fileUpload = document.getElementById('fileUpload');
       const formData = new FormData();
       formData.append('streamfile', fileUpload.files[0]);
@@ -58,20 +59,19 @@ export default {
         });
         const response = await dataUpload;
         if (response.status === 200) {
-          console.log('yay');
           const responseJSON = await response.json();
-          console.log(responseJSON);
+
           this.wordData = await responseJSON;
           const { wordCounts } = responseJSON;
           const wordKeys = Object.keys(wordCounts);
-          console.log(wordKeys);
+
           const amounts = wordKeys.map(item => wordCounts[item]);
           const highestAmount = Math.max(...amounts);
-          console.log(highestAmount, 'this is the highest amount');
+
           const highestWordCount = wordKeys.filter(word => wordCounts[word] === highestAmount);
-          console.log(highestWordCount);
+
           this.wordHighArray = highestWordCount;
-          this.loading = true;
+          this.loading = false;
         }
       } catch (error) {
         console.error('File upload error', error);
