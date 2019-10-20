@@ -7,6 +7,7 @@
       </label>
       <input type="submit" />
     </form>
+    <div v-if="!loading && wordData">Loading...</div>
     <div class="data-output" v-if="wordData">
       <div>
         <p>Word Count = {{ wordData.totalWords}}</p>
@@ -38,6 +39,7 @@ export default {
     return {
       wordData: null,
       wordHighArray: null,
+      loading: false,
     };
   },
   methods: {
@@ -69,6 +71,7 @@ export default {
           const highestWordCount = wordKeys.filter(word => wordCounts[word] === highestAmount);
           console.log(highestWordCount);
           this.wordHighArray = highestWordCount;
+          this.loading = true;
         }
       } catch (error) {
         console.error('File upload error', error);
